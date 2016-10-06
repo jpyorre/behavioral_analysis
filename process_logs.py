@@ -1,3 +1,5 @@
+# Process log file and add to mongodb
+
 import time, sys
 from tldextract import tldextract
 from pymongo import MongoClient
