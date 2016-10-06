@@ -9,7 +9,6 @@ input_file = sys.argv[1]
 def put_data_into_mongodb(db_name,collection_name):
 	mongo_db_host = 'localhost'
 	connection = MongoClient(mongo_db_host)
-	realdb = connection.db_name.collection_name
 	db = connection[db_name][collection_name]
 	dnslogline = {}
 	for line in timeanddomainslist:            
