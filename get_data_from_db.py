@@ -23,7 +23,6 @@ def domain_count(domain):
         count_of_domains[d] += 1
     return(count_of_domains) 
 
-
 #############################
 # Get data from db and save results to a list
 #############################
@@ -32,29 +31,29 @@ timeanddomain = [] # Hold the list of domains for counting
 projects = collection.find(projection=fields)
 for project in projects:
 	dateandtime = project['time']
-	#dt = datetime.datetime.strptime(dateandtime, "%Y-%m-%d %H:%M:%S")
 	domain = project['domain']
 	line = ("{0},{1}").format(dateandtime, domain)
-        #print line
 	timeanddomain.append(line)
-
 #############################
 # Separate IP addresses from Domains
 #############################
 temp1 = [] # Hold the domains that are not IPV4
 unique_domains = []  # Hold the domains that are not IPV4 and IPV6. domain_count(domain) will use this to count the domains
-ip = []
+ip = [] # Hold the IP addresses (IPV4 and IPV6)
+empty_items = 0
 for item in timeanddomain:
     item = item.split(',')[1]
     if item == '':
-        continue
+        empty_items += 1
+	continue
     if valid_ipv4(item) == True:
         ip.append(item)   
     if valid_ipv6(item) == True:
         ip.append(item)
+    # This next one takes all non-ipv4 items (domains) and adds them to the temp1 list:
     if valid_ipv4(item) == False:
         temp1.append(item)
-           
+# This one reads the temp1 list that contains both domains and ipv6 addresses and takes only the non-ipv6 entries and adds them to the unique_domains list:           
 for item in temp1:
     if valid_ipv6(item) == False:
         unique_domains.append(item)
@@ -73,7 +72,6 @@ for key, value in count_of_domains.iteritems():
     temp = [key,value]
     dictlist.append(temp)
 
-
 #############################
 # Determine normal in a loose manner:
 #############################
@@ -87,13 +85,13 @@ for item in dictlist:
 	count = item[1]
 
 # if count is greater than or equal to a number: 
-	if count >= 10:
+	if count >= 2:
 		#print("{0}, {1}".format(domain,count))
 		normal_traffic.append(domain)
 		
 # if count is equal to a number: 
-	if count < 5:
-		print("{0}, {1}".format(domain,count))
+	if count < 2:
+		#print("{0}, {1}".format(domain,count))
 		suspicious_traffic.append(domain)
 
 # if count is less than or equal to a number: 
@@ -101,12 +99,13 @@ for item in dictlist:
 #		print("{0}, {1}".format(domain,count))
 
 #################################
-print('\n\n')
+print('\n')
+print str(empty_items) + " empty items"
 print str(len(unique_domains)) + " unique domains seen"
 print str(len(timeanddomain)) + " total domains"
-print('Normal traffic (domains visited over 10 times): {0}').format(len(normal_traffic))
-print('Amount of suspicious traffic domains visited under 5 times): {0}').format(len(suspicious_traffic))
-
+print str(len(ip)) + " total IP addresses"
+print('Normal traffic (domains visited over 3 times): {0}').format(len(normal_traffic))
+print('Amount of suspicious traffic domains visited under 2 times): {0}').format(len(suspicious_traffic))
 
 
 #############################
