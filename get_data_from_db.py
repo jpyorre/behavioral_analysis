@@ -18,7 +18,7 @@ fields = {'time':True, 'domain':True, '_id':False}
 # Count the number of times something is seen:
 def domain_count(domain):
     count_of_domains = Counter()
-    for d in temp2:
+    for d in unique_domains:
         t = d.split(',')[0]
         count_of_domains[d] += 1
     return(count_of_domains) 
@@ -42,7 +42,7 @@ for project in projects:
 # Separate IP addresses from Domains
 #############################
 temp1 = [] # Hold the domains that are not IPV4
-temp2 = []  # Hold the domains that are not IPV4 and IPV6. domain_count(domain) will use this to count the domains
+unique_domains = []  # Hold the domains that are not IPV4 and IPV6. domain_count(domain) will use this to count the domains
 ip = []
 for item in timeanddomain:
     item = item.split(',')[1]
@@ -57,12 +57,12 @@ for item in timeanddomain:
            
 for item in temp1:
     if valid_ipv6(item) == False:
-        temp2.append(item)
+        unique_domains.append(item)
 
 #############################
 # Count the Domains
 #############################
-count_of_domains = domain_count(temp2) # Count the domains and save as count_of_domains
+count_of_domains = domain_count(unique_domains) # Count the domains and save as count_of_domains
 
 # Turn the count_of_domains into a dictionary
 # Used to set a threshold and view domains contacted over or under a certain number
@@ -73,8 +73,44 @@ for key, value in count_of_domains.iteritems():
     temp = [key,value]
     dictlist.append(temp)
 
+
 #############################
-# More data work to create a pandas dataframe
+# Determine normal in a loose manner:
+#############################
+
+normal_traffic = []
+suspicious_traffic = []
+
+# Print domains with a certain number of visits
+for item in dictlist:
+	domain = item[0]
+	count = item[1]
+
+# if count is greater than or equal to a number: 
+	if count >= 10:
+		#print("{0}, {1}".format(domain,count))
+		normal_traffic.append(domain)
+		
+# if count is equal to a number: 
+	if count < 5:
+		print("{0}, {1}".format(domain,count))
+		suspicious_traffic.append(domain)
+
+# if count is less than or equal to a number: 
+#	if count <= 10:
+#		print("{0}, {1}".format(domain,count))
+
+#################################
+print('\n\n')
+print str(len(unique_domains)) + " unique domains seen"
+print str(len(timeanddomain)) + " total domains"
+print('Normal traffic (domains visited over 10 times): {0}').format(len(normal_traffic))
+print('Amount of suspicious traffic domains visited under 5 times): {0}').format(len(suspicious_traffic))
+
+
+
+#############################
+# Create Pandas dataframes for plotting and stuff
 #############################
 # timeanddomain_for_df will be used to create a pandas dataframe
 
@@ -116,20 +152,4 @@ dftest = pd.DataFrame(data=d)
 df = pd.DataFrame(data=y,index=x)
 df.index = pd.to_datetime(df.index)
 
-print df.head()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#print df.head()
