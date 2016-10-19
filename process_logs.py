@@ -15,7 +15,7 @@ def put_data_into_mongodb(db_name,collection_name):
 		time,domain = line.split(',')
 
 		dnslogline = {'time':time, 'domain':domain}
-		#print dnslogline
+		print dnslogline
 	
 		db.insert(dnslogline)
  
@@ -35,6 +35,7 @@ with open(input_file, 'r') as f:
 			domain = tldextract.extract(dom)
 			subd = domain.subdomain
 			line = ("{0},{1}".format(datetime, subd))
+			#print line
 			timeanddomainslist.append(line)
 
 put_data_into_mongodb('tcpdumpdns','connections')

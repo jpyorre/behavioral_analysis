@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from netaddr import valid_ipv4
 from netaddr import valid_ipv6
 from collections import Counter
+import investigate
 import pandas as pd
 
 mongodb_host = 'localhost'
@@ -11,6 +12,10 @@ collection_name = 'connections'
 connection = MongoClient(mongodb_host,mongodb_port)
 collection = connection[dbs_name][collection_name]
 fields = {'time':True, 'domain':True, '_id':False}
+
+with open('investigate_token.txt') as API_KEY:
+    token = API_KEY.read()
+    token = token.rstrip()
 
 #############################
 # FUNCTIONS
@@ -99,6 +104,36 @@ for item in dictlist:
 #		print("{0}, {1}".format(domain,count))
 
 #################################
+# Check the suspicious traffic in
+# OpenDNS Investigate:
+
+wl_domains = []
+bl_domains = []
+not_determined_domains = []
+for domain in suspicious_traffic:
+	inv = investigate.Investigate(token)
+	res = inv.categorization(domain, labels=True)
+	status = res[domain]['status']
+	#print("{0}: {1}".format(domain,status))
+	if status == 0:
+		not_determined_domains.append(domain)
+	if status == 1:
+		wl_domains.append(domain)
+	if status == -1:
+		security_category = res[domain]['security_categories']
+		#domain_and_cat = str(domain) + ":" + str(security_category)
+		bl_domains.append(domain)
+		#print (domain, security_category)
+#print("\n\nWhitelisted domains:\n{0}\n".format(wl_domains))
+#print("Not determined:\n{0}\n".format(not_determined_domains))
+#if bl_domains == 0:
+#	print("No blacklisted domains")
+#else:
+#for item in bl_domains:
+#	print item
+#print("Blacklisted domains:\n{0}\n".format(bl_domains))
+
+#################################
 print('\n')
 print str(empty_items) + " empty items"
 print str(len(unique_domains)) + " unique domains seen"
@@ -106,7 +141,10 @@ print str(len(timeanddomain)) + " total domains"
 print str(len(ip)) + " total IP addresses"
 print('Normal traffic (domains visited over 3 times): {0}').format(len(normal_traffic))
 print('Amount of suspicious traffic domains visited under 2 times): {0}').format(len(suspicious_traffic))
-
+print('\nOf the suspicious domains:')
+print('Whitelisted domains (OpenDNS): {0}'.format(len(wl_domains)))
+print('Blacklisted domains (OpenDNS): {0}'.format(len(bl_domains)))
+print('Neutral domains (OpenDNS): {0}'.format(len(not_determined_domains)))
 
 #############################
 # Create Pandas dataframes for plotting and stuff
