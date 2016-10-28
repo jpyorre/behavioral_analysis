@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify
 import os
-from process_dns import process_data, test
+from process_dns import process_data
 
 #app = Flask(__name__)
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')

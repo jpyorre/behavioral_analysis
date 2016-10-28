@@ -7,24 +7,13 @@ import pandas as pd
 from bson import json_util
 from bson.json_util import dumps
 import json
+from nvd3 import discreteBarChart, pieChart
 
 MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
 DBS_NAME = 'tcpdumpdns'
 COLLECTION_NAME = 'connections'
 fields = {'time':True, 'domain':True, '_id':False}
-
-def test():
-    connection = MongoClient(MONGODB_HOST, MONGODB_PORT)
-    collection = connection[DBS_NAME][COLLECTION_NAME]
-    projects = collection.find(projection=fields)
-    json_projects = []
-    for project in projects:
-        json_projects.append(project)
-    json_projects = json.dumps(json_projects, default=json_util.default)
-    connection.close()
-    return json_projects
-#test()
 
 def process_data():
 
@@ -37,13 +26,21 @@ def process_data():
     collection = connection[DBS_NAME][COLLECTION_NAME]
     projects = collection.find(projection=fields)
 
-    # Count the number of times something is seen:
-    def domain_count(domain):
-        count_of_domains = Counter()
+    # Count the number of times a domain is seen:
+    def count_domains(listofitems):
+        listofitems = Counter()
         for d in unique_domains:
             t = d.split(',')[0]
-            count_of_domains[d] += 1
-        return(count_of_domains) 
+            listofitems[d] += 1
+        return(listofitems) 
+
+    # Count the number of times a time occurs is seen:
+    def count_times(listofitems):
+        listofitems = Counter()
+        for d in all_times:
+            t = d.split(',')[0]
+            listofitems[d] += 1
+        return(listofitems) 
 
     #############################
     # Get data from db and save results to a list
@@ -55,6 +52,12 @@ def process_data():
         line = ("{0},{1}").format(dateandtime, domain)
         timeanddomain.append(line)
     
+    '''   # Save the time of domain hits
+       all_times = []  # Hold the times
+       for item in timeanddomain:
+           print item
+           time = item.split(',')[0]
+           all_times.append(time)'''
     #############################
     # Separate IP addresses from Domains
     #############################
@@ -63,72 +66,115 @@ def process_data():
     ip = [] # Hold the IP addresses (IPV4 and IPV6)
     empty_items = 0
     for item in timeanddomain:
-        item = item.split(',')[1]
-#        if item == '':
-#            empty_items += 1
-#        continue
-        if valid_ipv4(item) == True:
-            ip.append(item)   
-        if valid_ipv6(item) == True:
-            ip.append(item)
+        domain = item.split(',')[1]
+        if valid_ipv4(domain) == True:
+            ip.append(domain)   
+        if valid_ipv6(domain) == True:
+            ip.append(domain)
         # This next one takes all non-ipv4 items (domains) and adds them to the temp1 list:
-        if valid_ipv4(item) == False:
-            temp1.append(item)
+        if valid_ipv4(domain) == False:
+            temp1.append(domain)
     # This one reads the temp1 list that contains both domains and ipv6 addresses and takes only the non-ipv6 entries and adds them to the unique_domains list:           
-    for item in temp1:
-        if valid_ipv6(item) == False:
-            unique_domains.append(item)
-    
+    for domain in temp1:
+        if valid_ipv6(domain) == False:
+            unique_domains.append(domain)
+
     #############################
     # Count the Domains
     #############################
-    count_of_domains = domain_count(unique_domains) # Count the domains and save as count_of_domains
+    count_of_domains = count_domains(unique_domains) # Count the domains and save as count_of_domains
+
+    #############################
+    # Count times
+    #############################
+    #count_of_times = count_times(all_times) # Count the domains and save as count_of_domains
 
     # Turn the count_of_domains into a dictionary
     # Used to set a threshold and view domains contacted over or under a certain number
 
-    dictlist = []
+    domainslist = []
     temp = []
     for key, value in count_of_domains.iteritems():
         temp = [key,value]
-        dictlist.append(temp)
+        domainslist.append(temp)
 
-    xdata = []
-    ydata = []
-    for item in dictlist:
-        xdata.append(item[0])
-        ydata.append(item[1])
+    '''   timeslist = []
+       temp = []
+       for key, value in count_of_times.iteritems():
+           temp = [key,value]
+           timeslist.append(temp)'''
 
-    from nvd3 import discreteBarChart
-    chart = discreteBarChart(name='discreteBarChart', height=600, width=1000)
+    xdomaindata = []
+    ydomaindata = []
+    for item in domainslist:
+        xdomaindata.append(item[0])
+        ydomaindata.append(item[1])
 
-    chart.add_serie(y=ydata, x=xdata)
-    chart.buildhtml()
+    xtimedata = []
+    ytimedata = []
+    for item in timeanddomain:
+        item = item.split(',')
+        
+        xtimedata.append(item[0])
+        ytimedata.append(item[1])
+    
 
-    htmlhead = '''<!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <title>Flask Stock Visualizer</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href={{ url_for('static', filename='./bower_components/bootstrap/dist/css/bootstrap.min.css') }} rel="stylesheet" media="screen">
-        <link href={{ url_for('static', filename='main.css') }} rel="stylesheet" media="screen">
-      </head>
-      </head>
-    <body>
-        <script src={{ url_for('static', filename='./bower_components/jquery/dist/jquery.min.js') }}></script>
-        <script src={{ url_for('static', filename='./bower_components/bootstrap/dist/js/bootstrap.min.js') }}></script>
-        <script src={{ url_for('static', filename='./bower_components/d3/d3.min.js') }}></script>
-        <script src={{ url_for('static', filename='./bower_components/nvd3/build/nv.d3.js') }}></script>
-        <script src={{ url_for('static', filename='main.js') }}></script>'''
+    d = {'date':xtimedata,'domain':ytimedata}
+    df = pd.DataFrame(data=d)
+    #count_by_day = df.groupby(df['date']).count()
+    #count_by_day = df.groupby(df['domain']).count()
+    #print count_by_day['domain'].head()
+    #count_by_day = df['date'].value_counts()
+    #print count_by_day.index.values
+    #print count_by_day.head()
+    #print df['domain'].value_counts()
+    df['counts'] = df.groupby('domain').transform('count')
+    
 
-    htmltail = '''</body></html>'''
+    ### Domain visit Barchart:
+    domainbarchart = discreteBarChart(name='discreteBarChart', height=600, width=1000)
+    domainbarchart.add_serie(y=ydomaindata, x=xdomaindata)
+    domainbarchart.buildhtml()
 
-    htmloutput = htmlhead + chart.htmlcontent + htmltail
+    ### Time visit Barchart:
+    '''timebarchart = discreteBarChart(name='discreteBarChart', height=600, width=1000)
+                timebarchart.add_serie(y=ytimedata, x=xtimedata)
+                timebarchart.buildhtml()'''
+    timebarchart = discreteBarChart(name='discreteBarChart', height=600, width=1000)
+    timebarchart.add_serie(y=df['date'], x=df['counts'])
+    #timebarchart.add_serie(y=df.index.values, x=df['domain'])
+    timebarchart.buildhtml()
 
-    writefile = open('templates/index.html','w')
-    writefile.write(htmloutput)
+    #htmlhead = '''<!DOCTYPE html>
+    #<html>
+    #  <head>
+    #    <meta charset="utf-8">
+    #    <title>Flask Stock Visualizer</title>
+    #    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    #    <link href={{ url_for('static', filename='./bower_components/bootstrap/dist/css/bootstrap.min.css') }} rel="stylesheet" media="screen">
+    #    <link href={{ url_for('static', filename='main.css') }} rel="stylesheet" media="screen">
+    #  </head>
+    #  </head>
+    #<body>
+    #    <script src={{ url_for('static', filename='./bower_components/jquery/dist/jquery.min.js') }}></script>
+    #    <script src={{ url_for('static', filename='./bower_components/bootstrap/dist/js/bootstrap.min.js') }}></script>
+    #    <script src={{ url_for('static', filename='./bower_components/d3/d3.min.js') }}></script>
+    #    <script src={{ url_for('static', filename='./bower_components/nvd3/build/nv.d3.js') }}></script>
+    #    <script src={{ url_for('static', filename='main.js') }}></script>'''
 
+    #htmltail = '''</body></html>'''
+
+    #htmloutput = htmlhead + domainbarchart.htmlcontent + timebarchart.htmlcontent + htmltail
+    #domainbarchart = domainbarchart.htmlcontent
+    #timebarchart = timebarchart.htmlcontent
+    writefile = open('templates/domainbar.html','w')
+    writefile.write(domainbarchart.htmlcontent)
+
+    writefile = open('templates/timebar.html','w')
+    writefile.write(timebarchart.htmlcontent)
+
+    #writefile = open('templates/pie.html','w')
+    #writefile.write(piechart.htmlcontent)
 
     json_projects = json.dumps(count_of_domains, default=json_util.default)
     connection.close()
