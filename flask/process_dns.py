@@ -29,21 +29,13 @@ def process_data():
     collection = connection[DBS_NAME][COLLECTION_NAME]
     projects = collection.find(projection=fields)
 
-    # Count the number of times a domain is seen:
-    def count_domains(listofitems):
-        listofitems = Counter()
-        for d in unique_domains:
+    # Count the number of times a something is seen:
+    def count_stuff(listofitems):
+        listofitems_counted = Counter()
+        for d in listofitems:
             t = d.split(',')[0]
-            listofitems[d] += 1
-        return(listofitems) 
-
-    # Count the number of times a time occurs is seen:
-    def count_times(listofitems):
-        listofitems = Counter()
-        for d in all_times:
-            t = d.split(',')[0]
-            listofitems[d] += 1
-        return(listofitems) 
+            listofitems_counted[d] += 1
+        return(listofitems_counted) 
 
     #############################
     # Get data from db and save results to a list
@@ -82,8 +74,8 @@ def process_data():
         if valid_ipv6(domain) == False:
             unique_domains.append(domain)
 
-    count_of_domains = count_domains(unique_domains) # Count the domains and save as count_of_domains
-    #count_of_times = count_times(all_times) # Count the domains and save as count_of_domains
+    count_of_domains = count_stuff(unique_domains) # Count the domains and save as count_of_domains
+    #count_of_times = count_stuff(all_times) # Count the domains and save as count_of_domains
 
     # Turn the count_of_domains into a dictionary
     # Used to set a threshold and view domains contacted over or under a certain number
@@ -177,7 +169,9 @@ def process_data():
         token = token.rstrip()
 
     inv = investigate.Investigate(token)
-    
+
+    categories_list = []
+    security_categories_list = []
     wl_domains = []
     bl_domains = []
     not_determined_domains = []
@@ -189,17 +183,69 @@ def process_data():
         res = inv.categorization(domain, labels=True)
         status = res[domain]['status']
     
-        #print("{0}: {1}".format(domain,status))
         if status == 0:
+            # Get domain categorization and add it to categories_list
+            content_category = res[domain]['content_categories']
+            if content_category == []:
+                continue
+            else:
+                for value in content_category:
+                    categories_list.append(value)
+            ##############
             not_determined_domains.append(domain_fullrequest_count)
+
         if status == 1:
+            # Get domain categorization and add it to categories_list
+            content_category = res[domain]['content_categories']
+            if content_category == []:
+                continue
+            else:
+                for value in content_category:
+                    categories_list.append(value)
+
+            ##############
             wl_domains.append(domain_fullrequest_count)
+            #print domain_fullrequest_count
+
         if status == -1:
-            #security_category = res[line]['security_categories']
-            #domain_and_cat = str(domain) + ":" + str(security_category)
             bl_domains.append(domain_fullrequest_count)
+            security_category = res[domain]['security_categories']
+            if security_category == []:
+                continue
+            else:
+                for value in security_category:
+                    security_categories_list.append(value)
+
+            # Get domain categorization and add it to categories_list
+            content_category = res[domain]['content_categories']
+            if content_category == []:
+                continue
+            else:
+                for value in content_category:
+                    categories_list.append(value)
+            ##############
+            #domain_and_cat = str(domain) + ":" + str(security_category)
+            
+
             #print (domain, security_category)
 
+    count_of_categories = count_stuff(categories_list) # Count the categories and save as count_of_categories
+    
+    # Turn the count_of_categories into a dictionary
+    category_list = []
+    temp = []
+    for key, value in count_of_categories.iteritems():
+        temp = [key,value]
+        category_list.append(temp)
+
+    count_of_security_categories = count_stuff(security_categories_list) # Count the categories and save as count_of_security_categories
+    # Turn the count_of_security_categories into a dictionary
+    security_category_list = []
+    temp = []
+    for key, value in count_of_security_categories.iteritems():
+        temp = [key,value]
+        security_category_list.append(temp)
+    #print security_categories_list
     #####################################
     # CHART GENERATION
     #####################################
@@ -269,6 +315,44 @@ def process_data():
     writefile.write(whitelistedbarchart.htmlcontent)
 
     #####################################
+    # For a Pie Chart of categories:
+    xcategorylist = []
+    ycategorylist = []
+    for item in category_list:
+        xcategorylist.append(item[0]) # Categories
+        ycategorylist.append(item[1]) # Count
+
+    ### Blacklisted Barchart:
+    type = 'pieChart'
+    categorypiechart = pieChart(name=type, color_category='category20c', height=450, width=450)
+    xdata = xcategorylist
+    ydata = ycategorylist
+    extra_serie = {"tooltip": {"y_start": "", "y_end": " cal"}}
+    categorypiechart.add_serie(y=ydata, x=xdata, extra=extra_serie)
+    categorypiechart.buildhtml()
+    writefile = open('templates/category_piechart.html','w')
+    writefile.write(categorypiechart.htmlcontent)
+
+    #####################################
+    # For a Pie Chart of security categories:
+    xseccategorylist = []
+    yseccategorylist = []
+    for item in security_category_list:
+        xseccategorylist.append(item[0]) # Categories
+        yseccategorylist.append(item[1]) # Count
+
+    ### Blacklisted Barchart:
+    type = 'pieChart'
+    security_categorypiechart = pieChart(name=type, color_category='category20c', height=450, width=450)
+    xdata = xseccategorylist
+    ydata = yseccategorylist
+    extra_serie = {"tooltip": {"y_start": "", "y_end": " cal"}}
+    security_categorypiechart.add_serie(y=ydata, x=xdata, extra=extra_serie)
+    security_categorypiechart.buildhtml()
+    writefile = open('templates/security_category_piechart.html','w')
+    writefile.write(security_categorypiechart.htmlcontent)
+
+    #####################################
     # For a chart of neutral listed domains:
     xneutrallisted = []
     yneutrallisted = []
@@ -302,6 +386,7 @@ def process_data():
     stats_wl = ('<br>Of the suspicious domains (uniqued):<br>Whitelisted domains (OpenDNS): {0}<br>'.format(len(wl_domains)))
     stats_bl = ('Blacklisted domains (OpenDNS): {0}<br>'.format(len(bl_domains)))
     stats_neutral = ('Neutral domains (OpenDNS): {0}'.format(len(not_determined_domains)))
+    stats_categories_list = ('Number of categories seen: {0}'.format(len(categories_list)))
 
     stats = stats_number_of_u_domains + stats_number_of_t_domains + stats_number_of_ips + stats_normaltraffic + stats_suspicioustraffic + stats_wl + stats_bl + stats_neutral
 
@@ -313,6 +398,8 @@ def process_data():
     connection.close()
     # Return data to app.py
     return json_projects
+
+process_data()
     
 '''
 

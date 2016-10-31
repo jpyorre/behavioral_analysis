@@ -14,6 +14,14 @@ def index():
 def alldomains():
     return render_template("alldomains.html")
 
+@app.route('/category_piechart.html')
+def category_piechart():
+    return render_template("category_piechart.html")
+
+@app.route('/security_category_piechart.html')
+def security_category_piechart():
+    return render_template("security_category_piechart.html")
+    
 @app.route('/blacklisted_domains.html')
 def blacklisted():
     return render_template("blacklisted_domains.html")

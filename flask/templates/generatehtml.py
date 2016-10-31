@@ -19,6 +19,12 @@ htmlhead = '''<!DOCTYPE html>
     <br><br>Stats:
     <iframe width="100%" height="100%" frameborder="0" scrolling="no" src="stats.html"></iframe>
 
+    <br><br>Categories:
+    <iframe width="100%" height="450px" frameborder="0" scrolling="no" src="category_piechart.html"></iframe>
+
+    <br><br>Security Categories:
+    <iframe width="100%" height="450px" frameborder="0" scrolling="no" src="security_category_piechart.html"></iframe>
+
     <br><br>All domains visited:
     <iframe width="100%" height="310px" frameborder="0" scrolling="no" src="alldomains.html"></iframe>
 
