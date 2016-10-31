@@ -13,32 +13,31 @@ htmlhead = '''<!DOCTYPE html>
     <script src={{ url_for('static', filename='./bower_components/bootstrap/dist/js/bootstrap.min.js') }}></script>
     <script src={{ url_for('static', filename='./bower_components/d3/d3.min.js') }}></script>
     <script src={{ url_for('static', filename='./bower_components/nvd3/build/nv.d3.js') }}></script>
-    <script src={{ url_for('static', filename='main.js') }}></script>
     <script src={{ url_for('static', filename='plotly-latest.min.js') }}></script>
 
     <br><br>Stats:
-    <iframe width="100%" height="100%" frameborder="0" scrolling="no" src="stats.html"></iframe>
+    <iframe width="100%" height="200px" frameborder="1" scrolling="no" src="stats.html"></iframe>
 
     <br><br>Categories:
-    <iframe width="100%" height="450px" frameborder="0" scrolling="no" src="category_piechart.html"></iframe>
+    <iframe width="100%" height="1000px" frameborder="1" scrolling="no" src="category_piechart.html"></iframe>
 
     <br><br>Security Categories:
-    <iframe width="100%" height="450px" frameborder="0" scrolling="no" src="security_category_piechart.html"></iframe>
+    <iframe width="100%" height="450px" frameborder="1" scrolling="no" src="security_category_piechart.html"></iframe>
 
     <br><br>All domains visited:
-    <iframe width="100%" height="310px" frameborder="0" scrolling="no" src="alldomains.html"></iframe>
+    <iframe width="100%" height="310px" frameborder="1" scrolling="no" src="all_traffic.html"></iframe>
 
     <br><br>Blacklisted Domains:
-    <iframe width="100%" height="310px" frameborder="0" scrolling="no" src="blacklisted_domains.html"></iframe>
+    <iframe width="100%" height="310px" frameborder="1" scrolling="no" src="blacklisted_traffic.html"></iframe>
 
     <br><br>Non-classified Domains:
-    <iframe width="100%" height="310px" frameborder="0" scrolling="no" src="neutral_domains.html"></iframe>
+    <iframe width="100%" height="310px" frameborder="1" scrolling="no" src="not_categorized_traffic.html"></iframe>
 
     <br><br>Potentially Suspicious Domains:
-    <iframe width="100%" height="310px" frameborder="0" scrolling="no" src="suspicious_domains.html"></iframe>
+    <iframe width="100%" height="310px" frameborder="1" scrolling="no" src="suspicious_traffic.html"></iframe>
 
     <br><br>Whitelisted Domains:
-    <iframe width="100%" height="310px" frameborder="0" scrolling="no" src="whitelisted_domains.html"></iframe>
+    <iframe width="100%" height="310px" frameborder="1" scrolling="no" src="whitelisted_traffic.html"></iframe>
     '''
     
 

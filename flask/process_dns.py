@@ -11,10 +11,10 @@ import json
 from nvd3 import discreteBarChart, pieChart
 
 # Plotly:
-'''from plotly.offline import download_plotlyjs, init_notebook_mode, iplot
+from plotly.offline import download_plotlyjs, init_notebook_mode, iplot
 from plotly.offline.offline import _plot_html
 import cufflinks as cf
-import plotly.graph_objs as go'''
+import plotly.graph_objs as go
 
 MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
@@ -47,12 +47,12 @@ def process_data():
         line = ("{0},{1}").format(dateandtime, domain)
         timeanddomain.append(line)
     
-    '''   # Save the time of domain hits
-       all_times = []  # Hold the times
-       for item in timeanddomain:
-           print item
-           time = item.split(',')[0]
-           all_times.append(time)'''
+    # Save the time of domain hits
+    all_times = []  # Hold the times
+    for item in timeanddomain:
+       #print item
+       time = item.split(',')[0]
+       all_times.append(time)
     #############################
     # Separate IP addresses from Domains
     #############################
@@ -75,7 +75,7 @@ def process_data():
             unique_domains.append(domain)
 
     count_of_domains = count_stuff(unique_domains) # Count the domains and save as count_of_domains
-    #count_of_times = count_stuff(all_times) # Count the domains and save as count_of_domains
+    count_of_times = count_stuff(all_times) # Count the domains and save as count_of_domains
 
     # Turn the count_of_domains into a dictionary
     # Used to set a threshold and view domains contacted over or under a certain number
@@ -85,11 +85,11 @@ def process_data():
         temp = [key,value]
         domainslist.append(temp)
 
-    '''   timeslist = []
-       temp = []
-       for key, value in count_of_times.iteritems():
-           temp = [key,value]
-           timeslist.append(temp)'''
+    timeslist = []
+    temp = []
+    for key, value in count_of_times.iteritems():
+       temp = [key,value]
+       timeslist.append(temp)
     
     #############################
     # Determine normal in a loose manner:
@@ -141,25 +141,6 @@ def process_data():
                 domain_fullrequest_counts.append(domain_fullrequest_count)
             temp.append(domain) # Unique the domains
 
-    #####################################
-    # For a chart of suspicious domains:
-    xsuspicious = []
-    ysuspicious = []
-    for item in domain_counts:
-        item = item.split(',')
-        xsuspicious.append(item[0]) # Domains
-        ysuspicious.append(item[1]) # Count
-
-    ### Domain visit Barchart:
-    suspiciousbarchart = discreteBarChart(name='discreteBarChart', height=600, width=1000)
-    suspiciousbarchart.add_serie(y=ysuspicious, x=xsuspicious)
-    suspiciousbarchart.buildhtml()
-
-    writefile = open('templates/suspicious_domains.html','w')
-    writefile.write(suspiciousbarchart.htmlcontent)
-
-
-#TO DO: Look at odd domains with NLP to find DGA's, Have a whitelist of domains, such as paypal.com and look through domains, using NLP to find anomolies and comparing the ASN
     #################################
     # Check the suspicious traffic in
     # OpenDNS Investigate:
@@ -215,6 +196,7 @@ def process_data():
             else:
                 for value in security_category:
                     security_categories_list.append(value)
+                    categories_list.append(value)
 
             # Get domain categorization and add it to categories_list
             content_category = res[domain]['content_categories']
@@ -276,11 +258,29 @@ def process_data():
         xdomaindata.append(item[0])
         ydomaindata.append(item[1])
 
-    alldomains = discreteBarChart(name='discreteBarChart', height=300, width=1000)
-    alldomains.add_serie(y=ydomaindata, x=xdomaindata)
-    alldomains.buildhtml()
-    writefile = open('templates/alldomains.html','w')
-    writefile.write(alldomains.htmlcontent)
+    ### Plotly does this better. All domains visit Barchart:
+    '''alldomains = discreteBarChart(name='discreteBarChart', height=300, width=1000)
+                alldomains.add_serie(y=ydomaindata, x=xdomaindata)
+                alldomains.buildhtml()
+                writefile = open('templates/alldomains.html','w')
+                writefile.write(alldomains.htmlcontent)'''
+
+    #####################################
+    # For a chart of suspicious domains:
+    xsuspicious = []
+    ysuspicious = []
+    for item in domain_counts:
+        item = item.split(',')
+        xsuspicious.append(item[0]) # Domains
+        ysuspicious.append(item[1]) # Count
+
+    ### Plotly does this better. suspicious visit Barchart:
+    '''suspiciousbarchart = discreteBarChart(name='discreteBarChart', height=600, width=1000)
+                suspiciousbarchart.add_serie(y=ysuspicious, x=xsuspicious)
+                suspiciousbarchart.buildhtml()
+            
+                writefile = open('templates/suspicious_domains.html','w')
+                writefile.write(suspiciousbarchart.htmlcontent)'''
 
     #####################################
     # For a chart of blacklisted domains:
@@ -291,12 +291,12 @@ def process_data():
         xblacklisted.append(item[0]) # Domains
         yblacklisted.append(item[2]) # Count
 
-    ### Blacklisted Barchart:
-    blacklistedbarchart = discreteBarChart(name='discreteBarChart', height=300, width=600)
-    blacklistedbarchart.add_serie(y=yblacklisted, x=xblacklisted)
-    blacklistedbarchart.buildhtml()
-    writefile = open('templates/blacklisted_domains.html','w')
-    writefile.write(blacklistedbarchart.htmlcontent)
+    ### Plotly does this better. Blacklisted Barchart:
+    '''blacklistedbarchart = discreteBarChart(name='discreteBarChart', height=300, width=600)
+                blacklistedbarchart.add_serie(y=yblacklisted, x=xblacklisted)
+                blacklistedbarchart.buildhtml()
+                writefile = open('templates/blacklisted_domains.html','w')
+                writefile.write(blacklistedbarchart.htmlcontent)'''
 
     #####################################
     # For a chart of whitelisted domains:
@@ -307,14 +307,15 @@ def process_data():
         xwhitelisted.append(item[0]) # Domains
         ywhitelisted.append(item[2]) # Count
 
-    ### Blacklisted Barchart:
-    whitelistedbarchart = discreteBarChart(name='discreteBarChart', height=300, width=600)
-    whitelistedbarchart.add_serie(y=ywhitelisted, x=xwhitelisted)
-    whitelistedbarchart.buildhtml()
-    writefile = open('templates/whitelisted_domains.html','w')
-    writefile.write(whitelistedbarchart.htmlcontent)
+    ### Plotly does this better. whitelisted Barchart:
+    '''whitelistedbarchart = discreteBarChart(name='discreteBarChart', height=300, width=600)
+                whitelistedbarchart.add_serie(y=ywhitelisted, x=xwhitelisted)
+                whitelistedbarchart.buildhtml()
+                writefile = open('templates/whitelisted_domains.html','w')
+                writefile.write(whitelistedbarchart.htmlcontent)'''
 
     #####################################
+
     # For a Pie Chart of categories:
     xcategorylist = []
     ycategorylist = []
@@ -324,7 +325,7 @@ def process_data():
 
     ### Blacklisted Barchart:
     type = 'pieChart'
-    categorypiechart = pieChart(name=type, color_category='category20c', height=450, width=450)
+    categorypiechart = pieChart(name=type, color_category='category20c', height=1000, width=1000)
     xdata = xcategorylist
     ydata = ycategorylist
     extra_serie = {"tooltip": {"y_start": "", "y_end": " cal"}}
@@ -332,6 +333,15 @@ def process_data():
     categorypiechart.buildhtml()
     writefile = open('templates/category_piechart.html','w')
     writefile.write(categorypiechart.htmlcontent)
+
+    #df_categories = pd.DataFrame({'count' : ycategorylist, 'category' : xcategorylist})
+    df_categories = pd.DataFrame(data=ycategorylist,index=xcategorylist)
+    #print df_categories
+    #print df_categories.pivot(df_categories.index, 'category')
+    #print df_categories.pivot(index=df_categories.index, columns='group')
+    #print df_categories
+    
+    
 
     #####################################
     # For a Pie Chart of security categories:
@@ -341,12 +351,12 @@ def process_data():
         xseccategorylist.append(item[0]) # Categories
         yseccategorylist.append(item[1]) # Count
 
-    ### Blacklisted Barchart:
+    ### security category piehart:
     type = 'pieChart'
     security_categorypiechart = pieChart(name=type, color_category='category20c', height=450, width=450)
     xdata = xseccategorylist
     ydata = yseccategorylist
-    extra_serie = {"tooltip": {"y_start": "", "y_end": " cal"}}
+    extra_serie = {"tooltip": {"y_start": "", "y_end": ""}}
     security_categorypiechart.add_serie(y=ydata, x=xdata, extra=extra_serie)
     security_categorypiechart.buildhtml()
     writefile = open('templates/security_category_piechart.html','w')
@@ -361,21 +371,12 @@ def process_data():
         xneutrallisted.append(item[0]) # Domains
         yneutrallisted.append(item[2]) # Count
 
-    ### neutral listed Barchart:
-    neutrallistedbarchart = discreteBarChart(name='discreteBarChart', height=300, width=600)
-    neutrallistedbarchart.add_serie(y=yneutrallisted, x=xneutrallisted)
-    neutrallistedbarchart.buildhtml()
-    writefile = open('templates/neutral_domains.html','w')
-    writefile.write(neutrallistedbarchart.htmlcontent)
-
-    #print("\n\nWhitelisted domains:\n{0}\n".format(wl_domains))
-    #print("Not determined:\n{0}\n".format(not_determined_domains))
-    #if bl_domains == []:
-    #    print("No blacklisted domains")
-    #else:
-    #for item in bl_domains:
-    #    print item
-        #print("Blacklisted domains:\n{0}\n".format(bl_domains))
+    ### Plotly does this better. neutral listed Barchart:
+    '''neutrallistedbarchart = discreteBarChart(name='discreteBarChart', height=300, width=600)
+                neutrallistedbarchart.add_serie(y=yneutrallisted, x=xneutrallisted)
+                neutrallistedbarchart.buildhtml()
+                writefile = open('templates/neutral_domains.html','w')
+                writefile.write(neutrallistedbarchart.htmlcontent)'''
 
     #################################
     stats_number_of_u_domains =  str(len(unique_domains)) + " unique domains seen<br>"
@@ -393,16 +394,6 @@ def process_data():
     writefile = open('templates/stats.html','w')
     writefile.write(stats)
 
-    # Flask wants something returned:
-    json_projects = json.dumps(count_of_domains, default=json_util.default)
-    connection.close()
-    # Return data to app.py
-    return json_projects
-
-process_data()
-    
-'''
-
     # This one's for plotly:
     xtime = []
     ytime = []
@@ -411,13 +402,13 @@ process_data()
         xtime.append(item[0])
         ytime.append(item[1])
 
-    d = {'date':xtimedata,'domain':ytimedata}
+    d = {'date':xtime,'domain':ytime}
     df = pd.DataFrame(data=d)
     df['counts'] = df.groupby('domain').transform('count')
     
     # For plotly:
-    #df2 = pd.DataFrame(data=ytime,index=xtime)
-    #df2.index = pd.to_datetime(df2.index)
+    df2 = pd.DataFrame(data=ytime,index=xtime)
+    df2.index = pd.to_datetime(df2.index)
     #############################
     # HTML for plotly plots:
     #############################
@@ -432,21 +423,56 @@ process_data()
     </html>"""
 
      # Line plot:
-    plot_html, plotdivid, width, height =  _plot_html(df2.iplot(asFigure=True, kind ='scatter', subplots=True, shared_xaxes=True, fill=True, title='Count by day',dimensions=(800,800)), False, "", True, '100%', 525, False)
-    html_bar_chart = html_start + plot_html + html_end
-    f = open('templates/plottest_scatter.html', 'w')
-    f.write(html_bar_chart)
-    f.close()
+    '''plot_html, plotdivid, width, height =  _plot_html(df2.iplot(asFigure=True, kind ='scatter', subplots=True, shared_xaxes=True, fill=True, title='Count by day',dimensions=(800,800)), False, "", True, '100%', 525, False)
+                html_bar_chart = html_start + plot_html + html_end
+                f = open('templates/plottest_scatter.html', 'w')
+                f.write(html_bar_chart)
+                f.close()'''
 
     df_suspicious = pd.DataFrame(ysuspicious, xsuspicious)
-    #print df_suspicious.head()
-    # Line plot:
-    plot_html, plotdivid, width, height =  _plot_html(df_suspicious.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='Suspicious Traffic',dimensions=(800,800)), False, "", True, '100%', 525, False)
+    plot_html, plotdivid, width, height =  _plot_html(df_suspicious.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='Suspicious Traffic',dimensions=(600,600)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
-    f = open('templates/plotly_suspicious.html', 'w')
+    f = open('templates/suspicious_traffic.html', 'w')
     f.write(html_bar_chart)
     f.close()
     
+    df_alldomains = pd.DataFrame(ydomaindata, xdomaindata)
+    plot_html, plotdivid, width, height =  _plot_html(df_alldomains.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='All Traffic',dimensions=(600,300)), False, "", True, '100%', 525, False)
+    html_bar_chart = html_start + plot_html + html_end
+    f = open('templates/all_traffic.html', 'w')
+    f.write(html_bar_chart)
+    f.close()
+
+    df_whitelisted = pd.DataFrame(ywhitelisted, xwhitelisted)
+    plot_html, plotdivid, width, height =  _plot_html(df_whitelisted.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='Whitelisted Traffic',dimensions=(600,300)), False, "", True, '100%', 525, False)
+    html_bar_chart = html_start + plot_html + html_end
+    f = open('templates/whitelisted_traffic.html', 'w')
+    f.write(html_bar_chart)
+    f.close()
+
+    df_not_categorized = pd.DataFrame(yneutrallisted, xneutrallisted)
+    plot_html, plotdivid, width, height =  _plot_html(df_not_categorized.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='Non-categorized Traffic',dimensions=(600,300)), False, "", True, '100%', 525, False)
+    html_bar_chart = html_start + plot_html + html_end
+    f = open('templates/not_categorized_traffic.html', 'w')
+    f.write(html_bar_chart)
+    f.close()
+
+    df_blacklisted = pd.DataFrame(yblacklisted, xblacklisted)
+    plot_html, plotdivid, width, height =  _plot_html(df_blacklisted.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='Blacklisted Traffic',dimensions=(600,300)), False, "", True, '100%', 525, False)
+    html_bar_chart = html_start + plot_html + html_end
+    f = open('templates/blacklisted_traffic.html', 'w')
+    f.write(html_bar_chart)
+    f.close()
+    
+    plot_html, plotdivid, width, height =  _plot_html(df_categories.iplot(asFigure=True, kind ='line', subplots=False, shared_xaxes=True, fill=True, title='Categories',dimensions=(600,300)), False, "", True, '100%', 525, False)
+    html_bar_chart = html_start + plot_html + html_end
+    f = open('templates/categories.html', 'w')
+    f.write(html_bar_chart)
+    f.close()
+
+    
+    
+
     # Bar chart of domain counts per day:
     # Line plot:
     #plot_html, plotdivid, width, height =  _plot_html(dftest.iplot(asFigure=True, kind = 'line', subplots=False, shared_xaxes=True, fill=True, title='Count by day',dimensions=(800,800)), False, "", True, '100%', 525, False)
@@ -456,12 +482,8 @@ process_data()
     #f.close()
 
     # End plotly chart generation
-
     
-'''
-#process_data()
-    
-'''
+    '''
     #############################
     # Create Pandas dataframes for plotting and stuff
     #############################
@@ -506,4 +528,12 @@ process_data()
     df.index = pd.to_datetime(df.index)
 
     #print df.head()
-'''
+    '''
+
+
+    # Flask wants something returned:
+    json_projects = json.dumps(count_of_domains, default=json_util.default)
+    connection.close()
+    # Return data to app.py
+    return json_projects
+process_data()
