@@ -10,6 +10,30 @@ app = Flask(__name__, template_folder=tmpl_dir)
 def index():
     return render_template("index.html")
 
+@app.route('/alldomains.html')
+def alldomains():
+    return render_template("alldomains.html")
+
+@app.route('/blacklisted_domains.html')
+def blacklisted():
+    return render_template("blacklisted_domains.html")
+
+@app.route('/neutral_domains.html')
+def neutral_domains():
+    return render_template("neutral_domains.html")
+
+@app.route('/suspicious_domains.html')
+def suspicious_domains():
+    return render_template("suspicious_domains.html")
+
+@app.route('/whitelisted_domains.html')
+def whitelisted_domains():
+    return render_template("whitelisted_domains.html")
+
+@app.route('/stats.html')
+def stats():
+    return render_template("stats.html")
+
 @app.route("/dns")
 def data():
     #return get_data()
