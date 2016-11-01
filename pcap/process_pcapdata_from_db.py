@@ -125,10 +125,10 @@ def process_data():
     extra_serie = {"tooltip": {"y_start": "", "y_end": " cal"}}
     categorypiechart.add_serie(y=ycategorylist, x=xcategorylist, extra=extra_serie)
     categorypiechart.buildcontent()
-    writefile = open('../templates/pcap/pcap_category_piechart.html','w')
+    writefile = open('../flask/templates/pcap/pcap_category_piechart.html','w')
     writefile.write(html_start + categorypiechart.htmlcontent)
 
-    writefile = open('../templates/pcap/pcap_category_piechart.html','a')  # Re-open for appending
+    writefile = open('../flask/templates/pcap/pcap_category_piechart.html','a')  # Re-open for appending
     header = "<b>Time, Source IP, Destination Host, Destination IP, Request Method, Request</b><br>"
     writefile.write(header)
     for line in gets_with_a_request:
@@ -154,7 +154,7 @@ def process_data():
     df_timeseries = pd.DataFrame(ytime,xtime)
     plot_html, plotdivid, width, height =  _plot_html(df_timeseries.iplot(asFigure=True, kind ='bar', subplots=False, shared_xaxes=True, fill=True, title='Time Series',dimensions=(800,450)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
-    f = open('../templates/pcap/pcap_timeseries.html', 'w')
+    f = open('../flask/templates/pcap/pcap_timeseries.html', 'w')
     f.write(html_bar_chart)
     f.close()
 
