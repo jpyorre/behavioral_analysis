@@ -46,6 +46,18 @@ def whitelisted_traffic():
 def stats():
     return render_template("stats.html")
 
+@app.route('/pcap/')
+def pcap():
+    return render_template("pcap/index.html")
+
+@app.route('/pcap/pcap_category_piechart.html')
+def pcap_category_piechart():
+    return render_template("pcap/pcap_category_piechart.html")
+
+@app.route('/pcap/pcap_timeseries.html')
+def pcap_timeseries():
+    return render_template("pcap/pcap_timeseries.html")
+
 #@app.route("/dns")
 #def data():
     #return get_data()

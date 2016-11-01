@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.7.0/nv.d3.min.js"></script>
+        <script src="../../static/plotly-latest.min.js"></script>
+    </head>
+    <body>
+    <div id="piechart"><svg style="width:400px;height:400px;"></svg></div>
+
+
+    <script>
+
+
+
+    data_piechart=[{"values": [{"value": 255, "label": "GET Requests"}, {"value": 2, "label": "POSTs"}], "key": "Serie 1"}];
+
+    nv.addGraph(function() {
+        var chart = nv.models.pieChart();
+        chart.margin({top: 30, right: 60, bottom: 20, left: 60});
+        var datum = data_piechart[0].values;
+
+        chart.color(d3.scale.category20c().range());
+
+    chart.tooltipContent(function(key, y, e, graph) {
+          var x = String(key);
+              var y =  String(y)  + ' cal';
+
+              tooltip_str = '<center><b>'+x+'</b></center>' + y;
+              return tooltip_str;
+              });
+        chart.showLabels(true);
+
+            chart.donut(false);
+
+    chart.showLegend(true);
+
+
+
+
+        chart
+            .x(function(d) { return d.label })
+            .y(function(d) { return d.value });
+
+        chart.width(400);
+
+        chart.height(400);
+
+
+            d3.select('#piechart svg')
+            .datum(datum)
+            .transition().duration(500)
+            .attr('width', 400)
+            .attr('height', 400)
+            .call(chart);
+
+
+        });
+
+
+
+    </script>
+<b>Time, Source IP, Destination Host, Destination IP, Request Method, Request</b><br>26-09-2016 10:38:53:791414, 172.16.212.140, triangularllc.com, 107.182.162.228, POST, 'hidCflag=&Email=johnharmathon&Passwd=%2544q439%26%26&signIn=Sign+in&rmShown=1'<br>26-09-2016 10:39:18:047712, 172.16.212.140, triangularllc.com, 107.182.162.228, POST, 'hidCflag=&Email=johnharmathon&Passwd=%2543u4328972&signIn=Sign+in&rmShown=1'<br>
+    </body>
+    </html>
