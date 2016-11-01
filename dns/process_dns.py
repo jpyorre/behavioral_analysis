@@ -37,7 +37,6 @@ def process_data():
             listofitems_counted[d] += 1
         return(listofitems_counted) 
 
-    #############################
     # Get data from db and save results to a list
     #############################
     timeanddomain = [] # Hold the list of domains for counting
@@ -53,7 +52,7 @@ def process_data():
        #print item
        time = item.split(',')[0]
        all_times.append(time)
-    #############################
+    
     # Separate IP addresses from Domains
     #############################
     temp1 = [] # Hold the domains that are not IPV4
@@ -247,7 +246,7 @@ def process_data():
     #timebarchart.add_serie(y=df.index.values, x=df['domain'])
     timebarchart.buildhtml()
 
-    writefile = open('templates/timebar.html','w')
+    writefile = open('../flask/templates/timebar.html','w')
     writefile.write(timebarchart.htmlcontent)'''
 
     #####################################
@@ -262,7 +261,7 @@ def process_data():
     '''alldomains = discreteBarChart(name='discreteBarChart', height=300, width=1000)
                 alldomains.add_serie(y=ydomaindata, x=xdomaindata)
                 alldomains.buildhtml()
-                writefile = open('templates/alldomains.html','w')
+                writefile = open('../flask/templates/alldomains.html','w')
                 writefile.write(alldomains.htmlcontent)'''
 
     #####################################
@@ -279,7 +278,7 @@ def process_data():
                 suspiciousbarchart.add_serie(y=ysuspicious, x=xsuspicious)
                 suspiciousbarchart.buildhtml()
             
-                writefile = open('templates/suspicious_domains.html','w')
+                writefile = open('../flask/templates/suspicious_domains.html','w')
                 writefile.write(suspiciousbarchart.htmlcontent)'''
 
     #####################################
@@ -295,7 +294,7 @@ def process_data():
     '''blacklistedbarchart = discreteBarChart(name='discreteBarChart', height=300, width=600)
                 blacklistedbarchart.add_serie(y=yblacklisted, x=xblacklisted)
                 blacklistedbarchart.buildhtml()
-                writefile = open('templates/blacklisted_domains.html','w')
+                writefile = open('../flask/templates/blacklisted_domains.html','w')
                 writefile.write(blacklistedbarchart.htmlcontent)'''
 
     #####################################
@@ -311,7 +310,7 @@ def process_data():
     '''whitelistedbarchart = discreteBarChart(name='discreteBarChart', height=300, width=600)
                 whitelistedbarchart.add_serie(y=ywhitelisted, x=xwhitelisted)
                 whitelistedbarchart.buildhtml()
-                writefile = open('templates/whitelisted_domains.html','w')
+                writefile = open('../flask/templates/whitelisted_domains.html','w')
                 writefile.write(whitelistedbarchart.htmlcontent)'''
 
     #####################################
@@ -331,7 +330,7 @@ def process_data():
     extra_serie = {"tooltip": {"y_start": "", "y_end": " cal"}}
     categorypiechart.add_serie(y=ydata, x=xdata, extra=extra_serie)
     categorypiechart.buildhtml()
-    writefile = open('templates/category_piechart.html','w')
+    writefile = open('../flask/templates/category_piechart.html','w')
     writefile.write(categorypiechart.htmlcontent)
 
     df_categories = pd.DataFrame(data=ycategorylist,index=xcategorylist)
@@ -353,7 +352,7 @@ def process_data():
     extra_serie = {"tooltip": {"y_start": "", "y_end": ""}}
     security_categorypiechart.add_serie(y=ydata, x=xdata, extra=extra_serie)
     security_categorypiechart.buildhtml()
-    writefile = open('templates/security_category_piechart.html','w')
+    writefile = open('../flask/templates/security_category_piechart.html','w')
     writefile.write(security_categorypiechart.htmlcontent)
 
     #####################################
@@ -369,7 +368,7 @@ def process_data():
     '''neutrallistedbarchart = discreteBarChart(name='discreteBarChart', height=300, width=600)
                 neutrallistedbarchart.add_serie(y=yneutrallisted, x=xneutrallisted)
                 neutrallistedbarchart.buildhtml()
-                writefile = open('templates/neutral_domains.html','w')
+                writefile = open('../flask/templates/neutral_domains.html','w')
                 writefile.write(neutrallistedbarchart.htmlcontent)'''
 
     #################################
@@ -385,7 +384,7 @@ def process_data():
 
     stats = stats_number_of_u_domains + stats_number_of_t_domains + stats_number_of_ips + stats_normaltraffic + stats_suspicioustraffic + stats_wl + stats_bl + stats_neutral
 
-    writefile = open('templates/stats.html','w')
+    writefile = open('../flask/templates/stats.html','w')
     writefile.write(stats)
 
     # This one's for plotly:
@@ -419,7 +418,7 @@ def process_data():
      # Line plot:
     '''plot_html, plotdivid, width, height =  _plot_html(df2.iplot(asFigure=True, kind ='scatter', subplots=True, shared_xaxes=True, fill=True, title='Count by day',dimensions=(800,800)), False, "", True, '100%', 525, False)
                 html_bar_chart = html_start + plot_html + html_end
-                f = open('templates/plottest_scatter.html', 'w')
+                f = open('../flask/templates/plottest_scatter.html', 'w')
                 f.write(html_bar_chart)
                 f.close()'''
 
@@ -427,7 +426,7 @@ def process_data():
     df_suspicious = pd.DataFrame(ysuspicious, xsuspicious)
     plot_html, plotdivid, width, height =  _plot_html(df_suspicious.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='Suspicious Traffic',dimensions=(600,600)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
-    f = open('templates/suspicious_traffic.html', 'w')
+    f = open('../flask/templates/suspicious_traffic.html', 'w')
     f.write(html_bar_chart)
     f.close()
     
@@ -435,7 +434,7 @@ def process_data():
     df_alldomains = pd.DataFrame(ydomaindata, xdomaindata)
     plot_html, plotdivid, width, height =  _plot_html(df_alldomains.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='All Traffic',dimensions=(600,300)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
-    f = open('templates/all_traffic.html', 'w')
+    f = open('../flask/templates/all_traffic.html', 'w')
     f.write(html_bar_chart)
     f.close()
 
@@ -443,7 +442,7 @@ def process_data():
     df_whitelisted = pd.DataFrame(ywhitelisted, xwhitelisted)
     plot_html, plotdivid, width, height =  _plot_html(df_whitelisted.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='Whitelisted Traffic',dimensions=(600,300)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
-    f = open('templates/whitelisted_traffic.html', 'w')
+    f = open('../flask/templates/whitelisted_traffic.html', 'w')
     f.write(html_bar_chart)
     f.close()
 
@@ -451,7 +450,7 @@ def process_data():
     df_not_categorized = pd.DataFrame(yneutrallisted, xneutrallisted)
     plot_html, plotdivid, width, height =  _plot_html(df_not_categorized.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='Non-categorized Traffic',dimensions=(600,300)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
-    f = open('templates/not_categorized_traffic.html', 'w')
+    f = open('../flask/templates/not_categorized_traffic.html', 'w')
     f.write(html_bar_chart)
     f.close()
 
@@ -459,7 +458,7 @@ def process_data():
     df_blacklisted = pd.DataFrame(yblacklisted, xblacklisted)
     plot_html, plotdivid, width, height =  _plot_html(df_blacklisted.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='Blacklisted Traffic',dimensions=(600,300)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
-    f = open('templates/blacklisted_traffic.html', 'w')
+    f = open('../flask/templates/blacklisted_traffic.html', 'w')
     f.write(html_bar_chart)
     f.close()
     
@@ -467,74 +466,24 @@ def process_data():
     df_timeseries = pd.DataFrame(ytimedata,xtimedata)
     plot_html, plotdivid, width, height =  _plot_html(df_timeseries.iplot(asFigure=True, kind ='bar', subplots=False, shared_xaxes=True, fill=True, title='Time Series',dimensions=(800,450)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
-    f = open('templates/timeseries.html', 'w')
+    f = open('../flask/templates/timeseries.html', 'w')
     f.write(html_bar_chart)
     f.close()
-
-    
-    
 
     # Bar chart of domain counts per day:
     # Line plot:
     #plot_html, plotdivid, width, height =  _plot_html(dftest.iplot(asFigure=True, kind = 'line', subplots=False, shared_xaxes=True, fill=True, title='Count by day',dimensions=(800,800)), False, "", True, '100%', 525, False)
     #html_bar_chart = html_start + plot_html + html_end
-    #f = open('templates/plottest.html', 'w')
+    #f = open('../flask/templates/plottest.html', 'w')
     #f.write(html_bar_chart)
     #f.close()
 
     # End plotly chart generation
-    
-    '''
-    #############################
-    # Create Pandas dataframes for plotting and stuff
-    #############################
-    # timeanddomain_for_df will be used to create a pandas dataframe
-
-    timeanddomain_for_df_temp = []
-    timeanddomain_for_df = [] # This holds all domains (no IPv4 or IPv6 along with the datetime)
-
-    for item in timeanddomain:
-        item = item.split(',')
-        dt = item[0]
-        domain = item[1]
-        line = ("{0},{1}".format(dt,domain))
-        
-        if domain == '':
-            continue
-        if valid_ipv4(domain) == False:
-            timeanddomain_for_df_temp.append(line)
-        
-    for item in timeanddomain_for_df_temp:
-        item = item.split(',')
-        dt = item[0]
-        domain = item[1]
-        line = ("{0},{1}".format(dt,domain))
-        if valid_ipv6(domain) == False:
-            timeanddomain_for_df.append(line)
-
-    x = []
-    y = []
-    for item in timeanddomain_for_df:
-        item = item.split(',')
-        x.append(item[0])
-        y.append(item[1])
-
-    # One dataframe, used for some plots:
-    d = {'date':x,'domain':y}
-    dftest = pd.DataFrame(data=d)
-    #print dftest.head()
-
-    # Another dataframe, used for some plots:
-    df = pd.DataFrame(data=y,index=x)
-    df.index = pd.to_datetime(df.index)
-
-    #print df.head()
-    '''
 
 
-    # Flask wants something returned:
-    json_projects = json.dumps(count_of_domains, default=json_util.default)
-    connection.close()
+    # Flask wants something returned (only used when this script is accessed via flash/app.py. If the dataset is too large, every time you refresh the web app, it will re-run this script. I found it more effective to manually run this script or, later: run it via a cron job)
+    #json_projects = json.dumps(count_of_domains, default=json_util.default)
+    #connection.close()
     # Return data to app.py
-    return json_projects
+    #return json_projects
 process_data()
