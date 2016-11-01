@@ -2,11 +2,9 @@ htmlhead = '''<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Flask Stock Visualizer</title>
+    <title>DNS Traffic Stats</title>
+    <link href={{ url_for('static', filename='main.css') }} rel="stylesheet" type="text/css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href={{ url_for('static', filename='./bower_components/bootstrap/dist/css/bootstrap.min.css') }} rel="stylesheet" media="screen">
-    <link href={{ url_for('static', filename='main.css') }} rel="stylesheet" media="screen">
-  </head>
   </head>
 <body>
     <script src={{ url_for('static', filename='./bower_components/jquery/dist/jquery.min.js') }}></script>
@@ -21,8 +19,11 @@ htmlhead = '''<!DOCTYPE html>
     <br><br>Categories:
     <iframe width="100%" height="1000px" frameborder="1" scrolling="no" src="category_piechart.html"></iframe>
 
-    <br><br>Security Categories:
-    <iframe width="100%" height="450px" frameborder="1" scrolling="no" src="security_category_piechart.html"></iframe>
+    <br><br>Timeline:
+    <iframe width="100%" height="650px" frameborder="1" scrolling="no" src="timeseries.html"></iframe>
+
+    <!--<br><br>Security Categories:-->
+    <!--<iframe width="100%" height="450px" frameborder="1" scrolling="no" src="security_category_piechart.html"></iframe>-->
 
     <br><br>All domains visited:
     <iframe width="100%" height="310px" frameborder="1" scrolling="no" src="all_traffic.html"></iframe>

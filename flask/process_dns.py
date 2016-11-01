@@ -19,8 +19,8 @@ import plotly.graph_objs as go
 MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
 DBS_NAME = 'tcpdumpdns'
-#COLLECTION_NAME = 'connections'
-COLLECTION_NAME = '2000'
+COLLECTION_NAME = 'connections'
+#COLLECTION_NAME = '2000'
 fields = {'time':True, 'domain':True, '_id':False}
 
 def process_data():
@@ -232,13 +232,13 @@ def process_data():
     # CHART GENERATION
     #####################################
     # Time visit Barchart:
-    '''xtimedata = []
+    xtimedata = []
     ytimedata = []
     for item in timeanddomain:
         item = item.split(',')   
         xtimedata.append(item[0])
         ytimedata.append(item[1])
-
+    '''
     timebarchart = discreteBarChart(name='discreteBarChart', height=600, width=1000)
                 timebarchart.add_serie(y=ytimedata, x=xtimedata)
                 timebarchart.buildhtml()
@@ -334,15 +334,9 @@ def process_data():
     writefile = open('templates/category_piechart.html','w')
     writefile.write(categorypiechart.htmlcontent)
 
-    #df_categories = pd.DataFrame({'count' : ycategorylist, 'category' : xcategorylist})
     df_categories = pd.DataFrame(data=ycategorylist,index=xcategorylist)
-    #print df_categories
-    #print df_categories.pivot(df_categories.index, 'category')
-    #print df_categories.pivot(index=df_categories.index, columns='group')
-    #print df_categories
-    
-    
 
+    
     #####################################
     # For a Pie Chart of security categories:
     xseccategorylist = []
@@ -429,6 +423,7 @@ def process_data():
                 f.write(html_bar_chart)
                 f.close()'''
 
+    # Suspicious domains
     df_suspicious = pd.DataFrame(ysuspicious, xsuspicious)
     plot_html, plotdivid, width, height =  _plot_html(df_suspicious.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='Suspicious Traffic',dimensions=(600,600)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
@@ -436,6 +431,7 @@ def process_data():
     f.write(html_bar_chart)
     f.close()
     
+    # All domains visited
     df_alldomains = pd.DataFrame(ydomaindata, xdomaindata)
     plot_html, plotdivid, width, height =  _plot_html(df_alldomains.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='All Traffic',dimensions=(600,300)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
@@ -443,6 +439,7 @@ def process_data():
     f.write(html_bar_chart)
     f.close()
 
+    # Whitelisted
     df_whitelisted = pd.DataFrame(ywhitelisted, xwhitelisted)
     plot_html, plotdivid, width, height =  _plot_html(df_whitelisted.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='Whitelisted Traffic',dimensions=(600,300)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
@@ -450,6 +447,7 @@ def process_data():
     f.write(html_bar_chart)
     f.close()
 
+    # Not categorized
     df_not_categorized = pd.DataFrame(yneutrallisted, xneutrallisted)
     plot_html, plotdivid, width, height =  _plot_html(df_not_categorized.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='Non-categorized Traffic',dimensions=(600,300)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
@@ -457,6 +455,7 @@ def process_data():
     f.write(html_bar_chart)
     f.close()
 
+    # Blacklisted
     df_blacklisted = pd.DataFrame(yblacklisted, xblacklisted)
     plot_html, plotdivid, width, height =  _plot_html(df_blacklisted.iplot(asFigure=True, kind ='bar', subplots=True, shared_xaxes=True, fill=False, title='Blacklisted Traffic',dimensions=(600,300)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
@@ -464,9 +463,11 @@ def process_data():
     f.write(html_bar_chart)
     f.close()
     
-    plot_html, plotdivid, width, height =  _plot_html(df_categories.iplot(asFigure=True, kind ='line', subplots=False, shared_xaxes=True, fill=True, title='Categories',dimensions=(600,300)), False, "", True, '100%', 525, False)
+    # Time Series
+    df_timeseries = pd.DataFrame(ytimedata,xtimedata)
+    plot_html, plotdivid, width, height =  _plot_html(df_timeseries.iplot(asFigure=True, kind ='bar', subplots=False, shared_xaxes=True, fill=True, title='Time Series',dimensions=(800,450)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
-    f = open('templates/categories.html', 'w')
+    f = open('templates/timeseries.html', 'w')
     f.write(html_bar_chart)
     f.close()
 

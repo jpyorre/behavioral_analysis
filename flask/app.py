@@ -14,6 +14,10 @@ def index():
 def all_traffic():
     return render_template("all_traffic.html")
 
+@app.route('/timeseries.html')
+def timeseries():
+    return render_template("timeseries.html")
+
 @app.route('/category_piechart.html')
 def category_piechart():
     return render_template("category_piechart.html")
