@@ -1,8 +1,8 @@
-htmlhead = '''<!DOCTYPE html>
+html = '''<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title>DNS Traffic Stats</title>
+    <title>PCAP Stats</title>
     <link href="main.css" rel="stylesheet" type="text/css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
@@ -17,17 +17,21 @@ htmlhead = '''<!DOCTYPE html>
     <!--<iframe width="100%" height="200px" frameborder="1" scrolling="no" src="stats.html"></iframe>-->
 
     <br><br>GETs vs POSTs:
-    <iframe width="100%" height="500px" frameborder="1" scrolling="yes" src="pcap_category_piechart.html"></iframe>
+    <iframe width="100%" height="480px" frameborder="0" scrolling="yes" src="pcap_category_piechart.html"></iframe>
 
     <br><br>Timeline:
-    <iframe width="100%" height="600px" frameborder="1" scrolling="no" src="pcap_timeseries.html"></iframe>
-    '''
-    
+    <iframe width="100%" height="480px" frameborder="0" scrolling="no" src="pcap_timeseries.html"></iframe>
 
-htmltail = '''</body>
-</html>'''
-
-htmloutput = htmlhead + htmltail
+    GET Requests:<br>
+    <object type="image/svg+xml" width="1100" height="650" data="gets_to_dst_ips.svg">
+    </object>
+    <br>
+    POSTS:<br>
+    <object type="image/svg+xml" width="1100" height="650" data="posts_to_dst_ips.svg">
+    </object>
+</body>
+</html>
+'''
 
 writefile = open('pcap/index.html','w')
-writefile.write(htmloutput)
+writefile.write(html)

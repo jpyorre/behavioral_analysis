@@ -11,6 +11,7 @@ from bson import json_util
 from bson.json_util import dumps
 import json
 from nvd3 import discreteBarChart, pieChart
+import quickmap
 
 # Plotly:
 from plotly.offline import download_plotlyjs, init_notebook_mode, iplot
@@ -49,6 +50,7 @@ def process_data():
     posts_full_entry = []
     total_entries = []
     gets_and_posts_no_head = []
+    alltimes = []
 
     for data in projects:
     	time = data['time']
@@ -58,7 +60,6 @@ def process_data():
         src_ip = data['src_ip']
         dest_ip = data['dest_ip']
         dest_host = data['dest_host']
-
 
         if request_method == 'GET':
             if len(request) > 2: # Dirty way to negate the requests with no data
@@ -70,6 +71,7 @@ def process_data():
     	else:
     		line = "{0},{1},{2},{3},{4},{5},No request".format(time,src_ip,useragent,dest_ip,dest_host,request_method)
 
+        alltimes.append(time)
     	total_entries.append(line)
 
         # Used for counting the GETs and POSTs, for making the pie chart
@@ -131,7 +133,8 @@ def process_data():
     writefile = open('../flask/templates/pcap/pcap_category_piechart.html','a')  # Re-open for appending
     header = "<b>Time, Source IP, Destination Host, Destination IP, Request Method, Request</b><br>"
     writefile.write(header)
-    for line in gets_with_a_request:
+    #for line in gets_with_a_request:
+    for line in total_entries:
         line = line.split(',')
         time, src_ip, dest_host, dest_ip, method, request = line[0],line[1],line[4],line[3],line[5],line[6]
         line = ("{0}, {1}, {2}, {3}, {4}<br>".format(time, src_ip, dest_host, dest_ip, method, request))
@@ -152,11 +155,59 @@ def process_data():
         ytime.append(item[5])
     # Time Series
     df_timeseries = pd.DataFrame(ytime,xtime)
-    plot_html, plotdivid, width, height =  _plot_html(df_timeseries.iplot(asFigure=True, kind ='bar', subplots=False, shared_xaxes=True, fill=True, title='Time Series',dimensions=(800,450)), False, "", True, '100%', 525, False)
+    plot_html, plotdivid, width, height =  _plot_html(df_timeseries.iplot(asFigure=True, kind ='bar', subplots=False, shared_xaxes=True, fill=True, title='Time Series of HTTP Requests',dimensions=(800,450)), False, "", True, '100%', 525, False)
     html_bar_chart = html_start + plot_html + html_end
     f = open('../flask/templates/pcap/pcap_timeseries.html', 'w')
     f.write(html_bar_chart)
     f.close()
+
+    # Gets and Posts on a timeseries:
+
+    xtime = []
+    yrequest = []
+    posts_to_dst_ips = []
+    gets_to_dst_ips = []
+    for item in total_entries:
+        item = item.split(',')
+        time = item[0]
+        src_ip = item[2]
+        dst_ip = item[3]
+        dst_host = item[4]
+        request = item[5]
+
+        # Separate the dst_ip's based on GETS and POSTS (for a map)
+        if request == 'POST':
+            posts_to_dst_ips.append(dst_ip)
+
+        if request == 'GET':
+            gets_to_dst_ips.append(dst_ip)
+
+        # Get the count of POSTS for a timeseries
+        if request == 'POST':
+            xtime.append(time)
+            yrequest.append(1)
+        else:
+            xtime.append(time)
+            yrequest.append(0)
+        
+
+    # Create maps of the POSTS vs GETS:
+    quickmap.ip_map_world(posts_to_dst_ips,'../flask/templates/pcap/posts_to_dst_ips.svg')
+    quickmap.ip_map_world(gets_to_dst_ips,'../flask/templates/pcap/gets_to_dst_ips.svg')
+
+
+    df_timeseries = pd.DataFrame(yrequest,xtime)
+    
+    plot_html, plotdivid, width, height =  _plot_html(df_timeseries.iplot(asFigure=True, kind ='bar', subplots=False, shared_xaxes=True, fill=True, title='All Requests by time, showing the POSTs',dimensions=(800,450)), False, "", True, '100%', 525, False)
+    html_bar_chart = html_start + plot_html + html_end
+    f = open('../flask/templates/pcap/getsandposts_timeseries.html', 'w')
+    f.write(html_bar_chart)
+    f.close()
+
+
+    
+    
+
 
 # Check out domains with investigate
     #######################

@@ -58,6 +58,17 @@ def pcap_category_piechart():
 def pcap_timeseries():
     return render_template("pcap/pcap_timeseries.html")
 
+@app.route('/pcap/gets_to_dst_ips.svg')
+def gets_to_dst_ips():
+    return render_template("pcap/gets_to_dst_ips.svg")
+
+@app.route('/pcap/posts_to_dst_ips.svg')
+def posts_to_dst_ips():
+    return render_template("pcap/posts_to_dst_ips.svg")
+
+    
+    
+
 #@app.route("/dns")
 #def data():
     #return get_data()
