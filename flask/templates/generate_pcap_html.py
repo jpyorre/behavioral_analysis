@@ -13,8 +13,8 @@ html = '''<!DOCTYPE html>
     <script src="../bower_components/nvd3/build/nv.d3.js"></script>
     <script src="../plotly-latest.min.js"></script>
 
-    <!--<br><br>Stats:-->
-    <!--<iframe width="100%" height="200px" frameborder="1" scrolling="no" src="stats.html"></iframe>-->
+    <br><br>Stats:
+    <iframe width="100%" height="100px" frameborder="0" scrolling="no" src="stats.html"></iframe>
 
     <br><br>GETs vs POSTs:
     <iframe width="100%" height="480px" frameborder="0" scrolling="yes" src="pcap_category_piechart.html"></iframe>

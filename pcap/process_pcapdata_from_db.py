@@ -167,6 +167,9 @@ def process_data():
     yrequest = []
     posts_to_dst_ips = []
     gets_to_dst_ips = []
+    total_dst_ips = []
+    total_src_ips = []
+    total_dst_hosts = []
     for item in total_entries:
         item = item.split(',')
         time = item[0]
@@ -174,6 +177,15 @@ def process_data():
         dst_ip = item[3]
         dst_host = item[4]
         request = item[5]
+
+        if src_ip not in total_src_ips:
+            total_src_ips.append(src_ip)
+
+        if dst_ip not in total_dst_ips:
+            total_dst_ips.append(dst_ip)
+
+        if dst_host not in total_dst_hosts:
+            total_dst_hosts.append(dst_host)
 
         # Separate the dst_ip's based on GETS and POSTS (for a map)
         if request == 'POST':
@@ -204,19 +216,20 @@ def process_data():
     f.write(html_bar_chart)
     f.close()
 
-
-    
-    
-
-
-# Check out domains with investigate
+# TO DO: Check out domains with investigate
     #######################
     # STATS:
 
     number_of_gets = str(len(gets)) + " GET requests seen<br>"
     number_of_posts = str(len(posts)) + " POSTS seen<br>"
+    stats_number_of_src_ips =  str(len(total_src_ips)) + " total Source IP addresses<br>"
+    stats_number_of_dst_ips =  str(len(total_dst_ips)) + " total Destination IP addresses<br>"
+    stats_number_of_dst_hosts =  str(len(total_dst_hosts)) + " total Destination Hosts<br>"
 
-    #print number_of_gets
-    #print number_of_posts
+
+    stats = number_of_gets + number_of_posts + stats_number_of_src_ips + stats_number_of_dst_ips + stats_number_of_dst_hosts
+
+    writefile = open('../flask/templates/pcap/stats.html','w')
+    writefile.write(stats)
     		
 process_data()

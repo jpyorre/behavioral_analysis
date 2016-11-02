@@ -50,6 +50,10 @@ def stats():
 def pcap():
     return render_template("pcap/index.html")
 
+@app.route('/pcap/stats.html')
+def pcapstats():
+    return render_template("pcap/stats.html")
+
 @app.route('/pcap/pcap_category_piechart.html')
 def pcap_category_piechart():
     return render_template("pcap/pcap_category_piechart.html")
