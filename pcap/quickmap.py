@@ -49,7 +49,8 @@ def miller(latitude, longitude):
     lon = longitude * math.pi / 180.0
     return [lon, (5.0 / 4.0) * math.log(math.tan(math.pi / 4.0 + 2.0 * lat / 5.0))]
 
-def ip_map_world(infile,mapname):
+def ip_map_world(maplocation, infile,mapname):
+    #gi = pygeoip.GeoIP('../flask/static/geodata/GeoLiteCity.dat', pygeoip.MEMORY_CACHE)
     gi = pygeoip.GeoIP('../flask/static/geodata/GeoLiteCity.dat', pygeoip.MEMORY_CACHE)
     vectors = list()
     for line in infile:
@@ -75,7 +76,8 @@ def ip_map_world(infile,mapname):
     bg_height = 1502.0 / 2
     bg_ratio = bg_width / bg_height
     bg = image(x=0, y=0, width=bg_width, height=bg_height)
-    bg.set_xlink_href('miller-2048x1502-color.jpg')
+    #bg.set_xlink_href('../../static/miller-2048x1502-color.jpg')
+    bg.set_xlink_href(maplocation)
     s.addElement(bg)
 
     max_x = math.pi + math.pi

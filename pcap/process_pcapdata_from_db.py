@@ -204,8 +204,8 @@ def process_data():
         
 
     # Create maps of the POSTS vs GETS:
-    quickmap.ip_map_world(posts_to_dst_ips,'../flask/templates/pcap/posts_to_dst_ips.svg')
-    quickmap.ip_map_world(gets_to_dst_ips,'../flask/templates/pcap/gets_to_dst_ips.svg')
+    quickmap.ip_map_world('../../static/miller-2048x1502-color.jpg',posts_to_dst_ips,'../flask/templates/pcap/posts_to_dst_ips.svg')
+    quickmap.ip_map_world('../../static/miller-2048x1502-color.jpg',gets_to_dst_ips,'../flask/templates/pcap/gets_to_dst_ips.svg')
 
 
     df_timeseries = pd.DataFrame(yrequest,xtime)
