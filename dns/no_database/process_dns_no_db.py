@@ -145,7 +145,7 @@ def process_data():
     # Check the suspicious traffic in
     # OpenDNS Investigate:
     token = ()
-    with open('investigate_token.txt') as API_KEY:
+    with open('../investigate_token.txt') as API_KEY:
         token = API_KEY.read()
         token = token.rstrip()
 
@@ -408,7 +408,7 @@ def process_data():
     #############################
     html_start = """<html>
     <head>
-      <script src="plotly-latest.min.js"></script>
+      <script src="../../flask/static/plotly-latest.min.js"></script>
     </head>
     <body>"""
 
