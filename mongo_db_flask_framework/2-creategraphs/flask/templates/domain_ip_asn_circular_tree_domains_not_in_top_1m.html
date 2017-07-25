@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Circular Category Tree (Not in top 1 million Domains</title>
+<style>
+.node {
+  cursor: pointer;
+}
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+.node text {
+  font: 10px sans-serif;
+}
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+</style>
+<script src="/static/js/d3.v3.min.js" charset="utf-8"></script>
+{% endblock %}
+
+{% block table %}
+<script>var datafile='static/data/domain_ip_asn_tree_domains_not_in_top_1m.json'</script>
+<script src = "/static/js/custom/circulartree.js"></script>
+{% endblock %}

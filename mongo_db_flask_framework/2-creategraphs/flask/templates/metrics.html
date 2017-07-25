@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Metrics</title>
+    <script src="/static/js/d3.v4.min.js" charset="utf-8"></script>
+  <!-- metricsgraphics -->
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <link href='static/css/metricsgraphics.css' rel='stylesheet' type='text/css'>
+    <script src='static/js/lib/highlight.pack.js'></script>
+    <!-- metricsgraphics dev start -->
+    <script src='/static/js/MG.js'></script>
+    <script src='/static/js/misc/utility.js'></script>
+    <script src='/static/js/common/data_graphic.js'></script>
+    <script src='/static/js/common/hooks.js'></script>
+    <script src='/static/js/common/register.js'></script>
+    <script src='/static/js/common/bootstrap_tooltip_popover.js'></script>
+    <script src='/static/js/common/scales.js'></script>
+    <script src='/static/js/common/chart_title.js'></script>
+    <script src='/static/js/common/y_axis.js'></script>
+    <script src='/static/js/common/x_axis.js'></script>
+    <script src='/static/js/common/init.js'></script>
+    <script src='/static/js/common/markers.js'></script>
+    <script src='/static/js/common/rollover.js'></script>
+    <script src='/static/js/common/window_listeners.js'></script>
+    <script src='/static/js/layout/bootstrap_dropdown.js'></script>
+    <script src='/static/js/layout/button.js'></script>
+    <script src='/static/js/charts/line.js'></script>
+    <script src='/static/js/charts/histogram.js'></script>
+    <script src='/static/js/charts/point.js'></script>
+    <script src='/static/js/charts/bar.js'></script>
+    <script src='/static/js/charts/table.js'></script>
+    <script src='/static/js/charts/missing.js'></script>
+    <script src='/static/js/misc/process.js'></script>
+    <script src='/static/js/misc/smoothers.js'></script>
+    <script src='/static/js/misc/formatters.js'></script>
+    <script src='/static/js/misc/transitions.js'></script>
+    <script src='/static/js/misc/error.js'></script>    
+    <!-- end metricsgraphics -->
+    <!-- charts.js -->
+    <script src="/static/js/chartsjs/Chart.bundle.min.js"></script>
+     <!-- end charts.js -->
+
+    <script src="/static/js/custom/metrics_custom.js"></script>
+    <script src="/static/js/custom/charts_custom.js"></script>
+{% endblock %}
+
+<body>
+
+{% block table %}
+<table width = "100%" border=1>
+    <tr>
+        <td valign="top">
+            <div id="aggregated-all"></div>
+        </td>
+        <td>
+            <div style="width:250px; height:250px;"><canvas id="inv_categories_pie" class="chart-pie"></canvas></div>
+        </td>
+    </tr>
+</table>
+<table width = "100%" border=1>
+    <tr>
+        <td valign="top">
+            <div id="ts_all_bandwidth"></div>
+            <div id="ts_domains_in_top_1m"></div>
+            <div id="ts_domains_not_in_top_1m"></div>
+        </td>
+
+        <td valign="top">
+            <div id="security_categories_all"></div>
+            <div id="security_categories_in_top_1m"></div>
+            <div id="security_categories_not_in_top_1m"></div>
+        </td>
+</tr>
+<!-- <tr> 
+<td>
+<div style="width:250px; height:250px;"><canvas id="categories_pie" class="chart-pie"></canvas></div>
+</td>
+<td>
+<div style="width:250px; height:250px;"><canvas id="inv_categories_pie" class="chart-pie"></canvas></div>
+</td>
+</tr>
+</table>
+<table>
+<tr>
+<td>
+<div style="width:1400px; height:726px;"><canvas id="categories_bar" class="chart-horizontalbar"></canvas>
+</td>
+</tr> -->
+</table>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,5 @@
+2017-01-29 00:00:49|theshawnstevensonmodel.com|162.144.255.131|20013|40.2181|-111.6133|0|education|
+2017-01-29 00:06:37|73.in-addr.arpa|NO-IP|NO-ASN|0|0|0|uncategorized|
+2017-01-29 00:06:37|thishouldhavenoip.com|NO-IP|NO-ASN|0|0|0|uncategorized|
+2017-01-29 00:47:09|gstatic.com|172.217.5.99|15169|37.4192|-122.0574|1|searchengines|
+2017-01-29 00:47:49|theshawnstevensonmodel.com|162.144.255.131|20013|40.2181|-111.6133|0|education|

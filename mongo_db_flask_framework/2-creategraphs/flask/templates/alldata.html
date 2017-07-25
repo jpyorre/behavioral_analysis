@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>All Domains</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/jquery.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="/static/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/static/js/jquery.tablesorter.pager.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('#data-table').DataTable();
+} );
+
+$(document).ready(function() 
+    { 
+        $("#data-table").tablesorter(); 
+    } 
+); 
+</script>
+{% endblock %}
+
+{% block table %}
+<table id="data-table" class="table table-bordered table-striped table-hover table-condensed tablesorter">
+FIELDS = {'time':True, 'domain':True, 'ip':True, 'asn':True, 'lat':True, 'lon':True, 'relation': True, 'inv_status':True,'tid':True,'urls':True,'_id':False}
+      <h3>All Traffic</h3><a href="/map">View Map</a><br />
+      Links open in a new tab: Domains, IP's, ASN, URLS open in Investigate, Samples in Threatgrid, Location in Google maps.
+      <div id="ts_all_bandwidth"></div>
+          <thead>
+            <tr>
+            <th>Time</th>
+            <th>Domain</th>
+            <th>IP</th>
+            <th>ASN</th>
+            <th>Location</th>
+            <th>Investigate Status</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+          <tbody>
+          {% for items in data %}
+            
+            <tr>
+              <td>{{ items.time  }}</td>
+              <td><a target="_blank" href="https://investigate.opendns.com/domain-view/name/{{ items.domain  }}/view"</a>{{ items.domain }}</td>
+              
+              {% if items.ip == "NO-IP" %}
+              <td>N/A</td>
+              <td>N/A</td>
+                <td>N/A</td>
+              {% else %}
+              <td><a target="_blank" href="https://investigate.opendns.com/ip-view/{{items.ip}}"</a>{{ items.ip  }}</td>
+              <td><a target="_blank" href="https://investigate.opendns.com/as-view/{{items.asn}}"</a>{{ items.asn  }}</td>
+              <td><a target="_blank" href="http://maps.google.com/?q={{items.lat}},{{items.lon}}"</a>Location</td>
+              {% endif %}
+
+              {% if items.inv == "1" %}
+                <td class="success">{{ items.inv  }}</td>
+              {% elif items.inv == "-1" %}
+                <td class="danger">{{ items.inv  }}</td>
+              {% else %}
+                <td class="info">{{ items.inv  }}</td>
+              {% endif %}
+              <td>{{ items.category  }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Domain to ASN</title>
+<script src="/static/js/d3.v3.min.js" charset="utf-8"></script>
+<style>
+.link {
+  stroke: #ccc;
+}
+.node text {
+  pointer-events: none;
+  font: 10px sans-serif;
+  color: FFFFFF;
+}
+</style>
+{% endblock %}
+
+{% block table %}
+<script>var datafile='static/data/force_graph_domains_securitycategory.json'</script>
+<script src = "/static/js/custom/forcegraph.js">
+</script>
+{% endblock %}

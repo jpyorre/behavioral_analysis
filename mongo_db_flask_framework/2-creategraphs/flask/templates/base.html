@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <script src="/static/js/jquery-3.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/topojson.min.js"></script>
+{% block head %}
+{% endblock %}
+</head>
+
+<div class="navbar navbar-inverse" role="navigation"> 
+ <div class="container">
+
+<div class="navbar-collapse collapse"> 
+<ul class="nav navbar-nav">
+<li><a href="/">Metrics</a></li>
+<li><a href="/all">All Data</a></li>
+<li><a href="/domains_in_top_1m">Domains in top 1 mil</a></li>
+<li><a href="/domains_not_in_top_1m">Domains not in top 1 mil</a></li>
+<li><a href="/vt_data">All Data (VT Results)</a></li>
+<li><a href="/categories">Category Metrics</a></li>
+<li><a href="/categories_tree_top">Categories (Top Domains)</a></li>
+<li><a href="/categories_tree_not_top">Categories (Not Top Domains)</a></li>
+<li><a href="/asn_tree_top">ASN Tree (Top Domains)</a></li>
+<li><a href="/asn_tree_not_top">ASN Tree (Not Top Domains)</a></li>
+<!-- <li><a href="/map_all">Map  (All)</a></li> -->
+<li><a href="/map_domains_in_top_1m">Map  (Top domains)</a></li>
+<li><a href="/map_domains_not_in_top_1m">Map  (Not top domains)</a></li>
+<!-- <li><a href="/forcegraph_domain_to_asn">Domain/ASN (forcegraph)</a></li> -->
+
+</ul>
+</div>
+</div>
+</div>
+
+<body>
+{% block table %}
+{% endblock %}
+</body>
+</html>
